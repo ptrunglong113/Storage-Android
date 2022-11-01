@@ -32,7 +32,7 @@ public class ExternalStorage extends Activity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_external_storage);
         initView();
         // check if external storage is available and not read only
         if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
