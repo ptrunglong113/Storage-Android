@@ -9,10 +9,12 @@
     android:orientation="vertical">
 
     <Button
+        android:id="@+id/btnInternal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Internal Storage"/>
     <Button
+        android:id="@+id/btnExternal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="External Storage"/>
