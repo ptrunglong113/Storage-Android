@@ -18,11 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 public class ExternalStorage extends Activity implements OnClickListener {
 
-    Button btnSave, readFromExternalStorage;
+    Button btnSave, btnReadFromExternalStorage;
     private String filename = "MySampleFile.txt";
     private String filepath = "MyFileStorage";
     TextView responseText;
@@ -33,7 +31,9 @@ public class ExternalStorage extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_external_storage);
-        initView();
+
+        AddControls();
+
         // check if external storage is available and not read only
         if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
             btnSave.setEnabled(false);
@@ -43,14 +43,16 @@ public class ExternalStorage extends Activity implements OnClickListener {
 
     }
 
-    private void initView() {
+    // Ánh xạ
+    private void AddControls() {
         myInputText = (EditText) findViewById(R.id.myInputText);
         responseText = (TextView) findViewById(R.id.responseText);
         btnSave = (Button) findViewById(R.id.btnSave);
         btnSave.setOnClickListener(this);
-        readFromExternalStorage = (Button) findViewById(R.id.btnDisplay);
-        readFromExternalStorage.setOnClickListener(this);
+        btnReadFromExternalStorage = (Button) findViewById(R.id.btnDisplay);
+        btnReadFromExternalStorage.setOnClickListener(this);
     }
+
     public void onClick(View v) {
 
         String myData = "";
@@ -100,7 +102,7 @@ public class ExternalStorage extends Activity implements OnClickListener {
     }
 
     /*
-     * Kiểmtra xem device có bộ nhớ ngoài không
+     * Kiểm tra xem device có bộ nhớ ngoài không
      */
     private static boolean isExternalStorageAvailable() {
         String extStorageState = Environment.getExternalStorageState();
