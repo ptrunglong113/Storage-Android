@@ -1,5 +1,6 @@
 package com.example.storage;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -27,5 +28,14 @@ public class MainActivity extends AppCompatActivity {
             intent.setType("image/*");
             startActivityForResult(intent, 1);
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null){
+            imgViewTakePhoto.setImageURI(data.getData());
+        }
     }
 }
