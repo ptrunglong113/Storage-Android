@@ -8,17 +8,48 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnInternal"
-        android:layout_width="match_parent"
+    <TextView
+        android:textSize="25sp"
+        android:gravity="center"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Internal Storage"/>
-    <Button
-        android:id="@+id/btnExternal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="External Storage"/>
+        android:text="Lưu trữ ảnh đã chụp" />
 
+    <ImageView
+        android:id="@+id/imgViewTakePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:ems="10"
+        android:gravity="top|left">
+    </ImageView>
+
+    <Button
+        android:id="@+id/btnTakePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chụp"
+        android:layout_margin="5dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Lưu ảnh"
+            android:layout_margin="5dp"/>
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btnDisplay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Chọn ảnh"
+            android:layout_margin="5dp"/>
+    </LinearLayout>
 
 
 </LinearLayout>
