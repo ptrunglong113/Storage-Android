@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
 import android.view.View;
@@ -60,8 +61,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null){
-            imgViewTakePhoto.setImageURI(data.getData());
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+        }
+        else if(requestCode == 3 && resultCode == RESULT_OK && data != null){
+                imgViewTakePhoto.setImageURI(data.getData());
+            }
         }
     }
 }
