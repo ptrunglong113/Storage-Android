@@ -22,8 +22,9 @@ public class MainActivity extends AppCompatActivity {
         btnTakePhoto = findViewById(R.id.btnTakePhoto);
         btnSave = findViewById(R.id.btnSave);
         btnDisplay = findViewById(R.id.btnDisplay);
+        imgViewTakePhoto = findViewById(R.id.imgViewTakePhoto);
 
-        btnSave.setOnClickListener(v -> {
+        btnDisplay.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
             startActivityForResult(intent, 1);
