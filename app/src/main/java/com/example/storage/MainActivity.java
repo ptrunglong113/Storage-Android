@@ -2,9 +2,14 @@ package com.example.storage;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,10 +29,30 @@ public class MainActivity extends AppCompatActivity {
         btnDisplay = findViewById(R.id.btnDisplay);
         imgViewTakePhoto = findViewById(R.id.imgViewTakePhoto);
 
+        btnTakePhoto.setOnClickListener(v -> {
+
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, 1);
+
+            @Override
+            public void onClick(View v)
+            {
+                //Check camera permission
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    //TODO: Do somethings
+                } else {
+                    //Request camera permission
+                    ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA },
+                            SyncStateContract.Constants.RequestCode.REQUEST_CAMERA_PERMISSION);
+                }
+            }
+        });
+
         btnDisplay.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, 3);
         });
     }
 
