@@ -46,14 +46,14 @@ public class MainActivity extends AppCompatActivity {
     Button btnTakePhoto, btnSave, btnDisplay;
     ImageView imgViewTakePhoto;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         btnTakePhoto = findViewById(R.id.btnTakePhoto);
-
+        btnSave = findViewById(R.id.btnSave);
+        btnDisplay = findViewById(R.id.btnDisplay);
 
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
 
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 pick_from_gallery(v);
             }
         });
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pick_from_gallery(View view) {
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(pickPhoto, 1);
     }
 
