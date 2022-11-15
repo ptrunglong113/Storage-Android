@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     ImageView imgViewTakePhoto;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,35 +55,32 @@ public class MainActivity extends AppCompatActivity {
         btnTakePhoto = findViewById(R.id.btnTakePhoto);
 
 
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
 
-            btnTakePhoto.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    pick_from_camera(v);
+        btnTakePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pick_from_camera(v);
+            }
+        });
+
+        btnDisplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pick_from_gallery(v);
+            }
+        });
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    saveToGallery();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
-
-            btnDisplay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    pick_from_gallery(v);
-                }
-            });
-            btnSave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        saveToGallery();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-        }
-
-
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -105,9 +101,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
     public void pick_from_camera(View view) {
         Intent takepicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takepicture,0);
+        startActivityForResult(takepicture, 0);
     }
 
     public void pick_from_gallery(View view) {
@@ -120,30 +117,28 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver contentResolver = getContentResolver();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            images = MediaStore.Images.Media.getContentUri(MediaStore. VOLUME_EXTERNAL_PRIMARY) ;
-        }
-        else{
+            images = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+        } else {
             images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         }
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, System.currentTimeMillis() + ".jpg");
-        contentValues.put(MediaStore.Images.Media.MIME_TYPE,"image/*");
+        contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/*");
         Uri uri = contentResolver.insert(images, contentValues);
-
+
         try {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) imgViewTakePhoto.getDrawable();
             Bitmap bitmap = bitmapDrawable.getBitmap();
 
             OutputStream outputStream = contentResolver.openOutputStream(Objects.requireNonNull(uri));
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             Objects.requireNonNull(outputStream);
 
             Toast.makeText(this, "Luu thanh cong", Toast.LENGTH_SHORT).show();
-        }catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
 
 
     }
