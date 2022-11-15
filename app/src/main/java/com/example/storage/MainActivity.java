@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         btnTakePhoto = findViewById(R.id.btnTakePhoto);
         btnSave = findViewById(R.id.btnSave);
         btnDisplay = findViewById(R.id.btnDisplay);
+        imgViewTakePhoto = findViewById(R.id.imgViewTakePhoto);
 
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
 
