@@ -1,19 +1,19 @@
 package com.example.storage;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     Button btnTakePhoto, btnSave, btnDisplay;
@@ -30,30 +30,10 @@ public class MainActivity extends AppCompatActivity {
         btnDisplay = findViewById(R.id.btnDisplay);
         imgViewTakePhoto = findViewById(R.id.imgViewTakePhoto);
 
-        btnTakePhoto.setOnClickListener(v -> {
-
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, 1);
-
-            @Override
-            public void onClick(View v)
-            {
-                //Check camera permission
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    //TODO: Do somethings
-                } else {
-                    //Request camera permission
-                    ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA },
-                            SyncStateContract.Constants.RequestCode.REQUEST_CAMERA_PERMISSION);
-                }
-            }
-        });
-
         btnDisplay.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
-            startActivityForResult(intent, 3);
+            startActivityForResult(intent, 1);
         });
     }
 
@@ -61,13 +41,45 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null){
+            imgViewTakePhoto.setImageURI(data.getData());
+        } else if (requestCode == 2 && resultCode == RESULT_OK && data != null){
+            Bundle bundle = data.getExtras();
+            Bitmap bitmap = (Bitmap) bundle.get("data");
+            imgViewTakePhoto.setImageBitmap(bitmap);
         }
-        else if(requestCode == 3 && resultCode == RESULT_OK && data != null){
-                imgViewTakePhoto.setImageURI(data.getData());
+    }
+
+    private void LuuAnh() {
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, 2);
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File path = new File(directory,"profile.jpg");
+    }
+
+    private String saveToInternalStorage(Bitmap bitmapImage, File path){
+
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+        return directory.getAbsolutePath();
     }
 }
