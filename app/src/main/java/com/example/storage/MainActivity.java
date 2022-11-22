@@ -56,46 +56,40 @@ public class MainActivity extends AppCompatActivity {
         btnDisplay = findViewById(R.id.btnDisplay);
         imgViewTakePhoto = findViewById(R.id.imgViewTakePhoto);
 
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        // Kiểm tra quyền truy cập
+        ActivityCompat.requestPermissions(
+                MainActivity.this,
+                new String[] {Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                0);
 
-        btnTakePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pick_from_camera(v);
-            }
-        });
+        btnTakePhoto.setOnClickListener(v -> pick_from_camera(v));
 
-        btnDisplay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pick_from_gallery(v);
-            }
-        });
+        btnDisplay.setOnClickListener(v -> pick_from_gallery(v));
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    saveToGallery();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        btnSave.setOnClickListener(v -> {
+            try {
+                saveToGallery();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
 
+    // Nhận kết quả từ hai hàm pick_from_camera và pick_from_gallery
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case 0:
+            case 0: // Hàm pick_from_camera
                 if (resultCode == RESULT_OK) {
-                    Bundle extras = data.getExtras();
+                    Bundle extras = data.getExtras(); // getExtras() trả về một Bundle chứa dữ liệu
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     imgViewTakePhoto.setImageBitmap(imageBitmap);
                 }
                 break;
-            case 1:
+            case 1: // Hàm pick_from_gallery
                 if (resultCode == RESULT_OK) {
                     Uri selectedImage = data.getData();
                     imgViewTakePhoto.setImageURI(selectedImage);
@@ -111,41 +105,54 @@ public class MainActivity extends AppCompatActivity {
 
     public void pick_from_gallery(View view) {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // URL
         startActivityForResult(pickPhoto, 1);
     }
 
     private void saveToGallery() throws IOException {
-        Uri images;
+
+        // Các code dưới đây chỉ chạy được trên Android 10 trở lên
+        Uri imagesUri;
+
         ContentResolver contentResolver = getContentResolver();
 
+        // Lấy đường dẫn của thư mục Pictures
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            images = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+            imagesUri = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
         } else {
-            images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            imagesUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         }
-
+        // k1 - value 1
+        // k2 - value 2
+        // Lưu dữ liệu trong ContentValues
         ContentValues contentValues = new ContentValues();
-        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, System.currentTimeMillis() + ".jpg");
+        //putting file information in content values
+        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME,
+                System.currentTimeMillis() + ".jpg"); //Generating a file name
         contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/*");
-        Uri uri = contentResolver.insert(images, contentValues);
+
+        // Inserting the contentValues to contentResolver and getting the Uri
+        Uri uri = contentResolver.insert(imagesUri, contentValues);
 
         try {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) imgViewTakePhoto.getDrawable();
+
             Bitmap bitmap = bitmapDrawable.getBitmap();
 
+            //Opening an outputStream with the Uri that we got
             OutputStream outputStream = contentResolver.openOutputStream(Objects.requireNonNull(uri));
+
+            //Finally writing the bitmap to the output stream that we opened
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+            // Closing the output stream
             Objects.requireNonNull(outputStream);
 
-            Toast.makeText(this, "Luu thanh cong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
-
     }
-
 }
 
 
